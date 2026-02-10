@@ -5,6 +5,10 @@ const dropTables = async () => {
     try {
       console.log("Dropping All Tables...");
       await client.query(`
+      DROP TABLE IF EXISTS order_products;
+      DROP TABLE IF EXISTS reviews;
+      DROP TABLE IF EXISTS orders;
+      DROP TABLE IF EXISTS products;
       DROP TABLE IF EXISTS users;
     `);
   
@@ -25,12 +29,11 @@ const createTables = async () => {
           "firstName" VARCHAR(255) NOT NULL,
           "lastName" VARCHAR(255) NOT NULL,
           email VARCHAR(255) UNIQUE NOT NULL,
-          imageurl TEXT DEFAULT 'https://picsum.photos/id/1080/400/300',
           username VARCHAR(255) UNIQUE NOT NULL,
           password VARCHAR(255) UNIQUE NOT NULL,
           "isAdmin" BOOLEAN DEFAULT false,
-          division VARCHAR(255) UNIQUE NOT NULL,
-          "ageClass" VARCHAR(255) UNIQUE NOT NULL,
+          division VARCHAR(255) NOT NULL,
+          "ageClass" VARCHAR(255) NOT NULL,
           gender VARCHAR(255) NOT NULL
         );
   
@@ -97,6 +100,7 @@ const createTables = async () => {
       client.connect();
       await dropTables();
       await createTables();
+      await createInitialUsers();
     } catch (error) {
       console.log("Error during rebuildDB");
       throw error;
@@ -105,4 +109,5 @@ const createTables = async () => {
   
   module.exports = {
     rebuildDB,
+    createInitialUsers,
   };
