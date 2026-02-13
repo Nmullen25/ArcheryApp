@@ -1,14 +1,12 @@
 const client = require('./client')
 const { createUser } = require("./users");
+const { createTournament } = require("./tournaments");
 
 const dropTables = async () => {
     try {
       console.log("Dropping All Tables...");
       await client.query(`
-      DROP TABLE IF EXISTS order_products;
-      DROP TABLE IF EXISTS reviews;
-      DROP TABLE IF EXISTS orders;
-      DROP TABLE IF EXISTS products;
+      DROP TABLE IF EXISTS tournaments;
       DROP TABLE IF EXISTS users;
     `);
   
@@ -35,6 +33,21 @@ const createTables = async () => {
           division VARCHAR(255) NOT NULL,
           "ageClass" VARCHAR(255) NOT NULL,
           gender VARCHAR(255) NOT NULL
+        );
+
+        CREATE TABLE tournaments (
+          id SERIAL PRIMARY KEY,
+          name VARCHAR(255) NOT NULL, 
+          description TEXT NOT NULL,
+          organizer VARCHAR(255) NOT NULL,
+          association VARCHAR(255) NOT NULL,
+          "roundType" VARCHAR(255) NOT NULL,
+          "endCount" NUMERIC NOT NULL,
+          "arrowsPerEnd" NUMERIC NOT NULL,
+          "maxArrowValue" NUMERIC NOT NULL,
+          "maxScore" NUMERIC NOT NULL,
+          date VARCHAR(255) NOT NULL,
+          location VARCHAR(255) NOT NULL
         );
   
       `);
@@ -95,12 +108,67 @@ const createTables = async () => {
     };
   };
 
+    const createInitialTournaments = async () => {
+    console.log("Starting to create tournaments...");
+    try {
+      const tournamentsToCreate = [
+        { 
+          name: 'ASR Buckle Series #6', 
+          description: 'Local Buckle Series',
+          organizer: 'ASR',
+          association: 'NFAA',
+          roundType: 'Vegas 300',
+          endCount: 10,
+          arrowsPerEnd: 3,
+          maxArrowValue: 10,
+          maxScore: 300,
+          date: 'March 14-15 2026',
+          location: 'Archery School of The Rockies'
+        },
+        { 
+          name: 'CSAA Vegas 900', 
+          description: 'State Championship, Round 1 of 2',
+          organizer: 'Colorado State Archery Association',
+          association: 'NFAA',
+          roundType: 'Vegas 450',
+          endCount: 15,
+          arrowsPerEnd: 3,
+          maxArrowValue: 10,
+          maxScore: 450,
+          date: 'March 21-22 2026',
+          location: 'Empty Quiver Archery & Red Rock Archery'
+        },
+        { 
+          name: 'CSAA 5 Spot 600', 
+          description: 'State Championship, Round 1 of 2',
+          organizer: 'Colorado State Archery Association',
+          association: 'NFAA',
+          roundType: '5 Spot 300',
+          endCount: 12,
+          arrowsPerEnd: 5,
+          maxArrowValue: 5,
+          maxScore: 300,
+          date: 'January 31st - February 1st 2026',
+          location: 'Archery School of The Rockies & Red Rock Archery' 
+        }
+      ];
+      const tournaments = await Promise.all(tournamentsToCreate.map(createTournament));
+      console.log("Tournaments created:");
+      console.log(tournaments);
+      console.log("Finished creating tournaments!");
+    } catch (error) {
+      console.error("Error creating tournaments!");
+      throw error;
+    };
+  };
+
   async function rebuildDB() {
     try {
       client.connect();
       await dropTables();
       await createTables();
       await createInitialUsers();
+      await createInitialTournaments();
     } catch (error) {
       console.log("Error during rebuildDB");
       throw error;
@@ -109,5 +177,4 @@ const createTables = async () => {
   
   module.exports = {
     rebuildDB,
-    createInitialUsers,
   };
