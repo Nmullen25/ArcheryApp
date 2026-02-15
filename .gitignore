@@ -2,3 +2,4 @@ node_modules
 Start_up.txt
 Error_text.txt
 Heroku_Deploy.txt
+.env

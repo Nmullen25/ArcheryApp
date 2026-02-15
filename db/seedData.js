@@ -1,11 +1,13 @@
 const client = require('./client')
 const { createUser } = require("./users");
 const { createTournament } = require("./tournaments");
+const { createTourScore } = require("./tourScores");
 
 const dropTables = async () => {
     try {
       console.log("Dropping All Tables...");
       await client.query(`
+      DROP TABLE IF EXISTS tourScores;
       DROP TABLE IF EXISTS tournaments;
       DROP TABLE IF EXISTS users;
     `);
@@ -48,6 +50,14 @@ const createTables = async () => {
           "maxScore" NUMERIC NOT NULL,
           date VARCHAR(255) NOT NULL,
           location VARCHAR(255) NOT NULL
+        );
+
+        CREATE TABLE tourScores  (
+          id SERIAL PRIMARY KEY,
+          "userId" INTEGER REFERENCES users(id),
+          "tournamentId" INTEGER REFERENCES tournaments(id),
+          "endScores" JSONB,
+          "totalScore" INTEGER NOT NULL
         );
   
       `);
@@ -162,6 +172,38 @@ const createTables = async () => {
     };
   };
 
+  const createInitialTourScores = async () => {
+    console.log('starting to create Tournament Scores...');
+    try {
+      const tourScoresToCreate = [
+        {
+          userId: 2, 
+          tournamentId: 2,
+          endScores: {
+            "end1": [10, 9, 8],
+            "end2": [10, 9, 9],
+            "end3": [9, 9, 9],
+            "end4": [10, 9, 7],
+            "end5": [10, 10, 9],
+            "end6": [10, 9, 8],
+            "end7": [10, 9, 9],
+            "end8": [9, 9, 9],
+            "end9": [10, 9, 7],
+            "end10": [10, 10, 9]
+          },
+          totalScore: 274
+        }
+      ]
+        const tourScores = await Promise.all(
+          tourScoresToCreate.map((tourScore) => createTourScore(tourScore))
+        );
+        console.log('Tournament Scores Created: ', tourScores);
+        console.log('Finished creating Tournament Scores.');
+    } catch(error) {
+      throw error;
+    };
+  };
+
   async function rebuildDB() {
     try {
       client.connect();
@@ -169,6 +211,7 @@ const createTables = async () => {
       await createTables();
       await createInitialUsers();
       await createInitialTournaments();
+      await createInitialTourScores();
     } catch (error) {
       console.log("Error during rebuildDB");
       throw error;

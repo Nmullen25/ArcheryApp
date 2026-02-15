@@ -51,16 +51,16 @@ apiRouter.use('/health', healthRouter);
 const usersRouter = require('./users');
 apiRouter.use('/users', usersRouter);
 
-const productsRouter = require('./products');
-apiRouter.use('/products', productsRouter);
+const tournamentsRouter = require('./tournaments');
+apiRouter.use('/tournaments', tournamentsRouter);
 
-const ordersRouter = require('./orders');
-apiRouter.use('/orders', ordersRouter);
+// const ordersRouter = require('./orders');
+// apiRouter.use('/orders', ordersRouter);
 
-const orderProductsRouter = require('./orderProducts');
-apiRouter.use('/orderProducts', orderProductsRouter);
+// const orderProductsRouter = require('./orderProducts');
+// apiRouter.use('/orderProducts', orderProductsRouter);
 
-const reviewsRouter = require('./reviews');
-apiRouter.use('/reviews', reviewsRouter);
+// const reviewsRouter = require('./reviews');
+// apiRouter.use('/reviews', reviewsRouter);
 
 module.exports = apiRouter;
