@@ -1,13 +1,13 @@
 const client = require('./client')
 const { createUser } = require("./users");
 const { createTournament } = require("./tournaments");
-const { createTourScore } = require("./tourScores");
+const { createTourScore, updateTourScore } = require("./tourScores");
 
 const dropTables = async () => {
     try {
       console.log("Dropping All Tables...");
       await client.query(`
-      DROP TABLE IF EXISTS tourScores;
+      DROP TABLE IF EXISTS tour_scores;
       DROP TABLE IF EXISTS tournaments;
       DROP TABLE IF EXISTS users;
     `);
@@ -52,12 +52,15 @@ const createTables = async () => {
           location VARCHAR(255) NOT NULL
         );
 
-        CREATE TABLE tourScores  (
+        CREATE TABLE tour_scores  (
           id SERIAL PRIMARY KEY,
           "userId" INTEGER REFERENCES users(id),
           "tournamentId" INTEGER REFERENCES tournaments(id),
-          "endScores" JSONB,
-          "totalScore" INTEGER NOT NULL
+          "roundOneEnds" JSONB,
+          "roundOneScore" INTEGER NOT NULL DEFAULT 0,
+          "roundTwoEnds" JSONB,
+          "roundTwoScore" INTEGER NOT NULL DEFAULT 0,
+          "totalScore" INTEGER NOT NULL DEFAULT 0
         );
   
       `);
@@ -179,7 +182,7 @@ const createTables = async () => {
         {
           userId: 2, 
           tournamentId: 2,
-          endScores: {
+          roundOneEnds: {
             "end1": [10, 9, 8],
             "end2": [10, 9, 9],
             "end3": [9, 9, 9],
@@ -191,14 +194,31 @@ const createTables = async () => {
             "end9": [10, 9, 7],
             "end10": [10, 10, 9]
           },
-          totalScore: 274
+          roundOneScore: 274,
+          roundTwoEnds: {
+            "end1": [10, 9, 8],
+            "end2": [10, 9, 9],
+            "end3": [9, 9, 9],
+            "end4": [10, 9, 7],
+            "end5": [10, 10, 9],
+            "end6": [10, 9, 8],
+            "end7": [10, 9, 9],
+            "end8": [9, 9, 9],
+            "end9": [10, 9, 7],
+            "end10": [10, 10, 9]
+          },
+          roundTwoScore: 274,
+          totalScore: 568
         }
-      ]
+      ];
         const tourScores = await Promise.all(
           tourScoresToCreate.map((tourScore) => createTourScore(tourScore))
         );
         console.log('Tournament Scores Created: ', tourScores);
-        console.log('Finished creating Tournament Scores.');
+        console.log('Finished creating Tournament Scores.');  
+        const update = {id: 1};
+        const updateScores = await updateTourScore((update));
+        console.log('Tournament Scores Updates: ', updateScores);
     } catch(error) {
       throw error;
     };
@@ -216,7 +236,7 @@ const createTables = async () => {
       console.log("Error during rebuildDB");
       throw error;
     }
-  }
+  };
   
   module.exports = {
     rebuildDB,

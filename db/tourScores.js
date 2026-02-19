@@ -1,35 +1,38 @@
 const client = require('./client');
 
-const createTourScore = async ({ userId, tournamentId, endScores, totalScore }) => {
+const createTourScore = async ({ userId, tournamentId, roundOneEnds, roundOneScore, roundTwoEnds, roundTwoScore, totalScore }) => {
   try {
     const { rows: [tourScore] } = await client.query(`
-      INSERT INTO tourScores ("userId", "tournamentId", "endScores", "totalScore")
-      VALUES ($1, $2, $3, $4)
+      INSERT INTO tour_scores ("userId", "tournamentId", "roundOneEnds", "roundOneScore", "roundTwoEnds", "roundTwoScore", "totalScore")
+      VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *;
-    `, [userId, tournamentId, endScores, totalScore]);
+    `, [userId, tournamentId, roundOneEnds, roundOneScore, roundTwoEnds, roundTwoScore, totalScore]);
     return tourScore;
   } catch (error) {
     throw error
   };
 };
 
-const updateTourScore = async ({id, ...fields}) => {
+const updateTourScore = async ({id}) => {
 
-  const setString = Object.keys(fields)
-  .map((key, index) => `"${ key }"=$${ index + 1 }`
-  ).join(', ');
+  // const setString = Object.keys(fields)
+  // .map((key, index) => `"${ key }"=$${ index + 1 }`
+  // ).join(', ');
 
-  if (setString.length === 0) {
-    return;
-  };
-  
+  // if (setString.length === 0) {
+  //   return;
+  // };
+
+// UPDATE table SET json_col = JSON_SET(json_col, '$.key', 'newValue') WHERE id = 1;  
+// jsonb_set(endScore, '{${ path }, ${ key }}', ${ field }::jsonb, true)
+
   try {
     const { rows: [tourScore] } = await client.query(`
-      UPDATE tourScores
-      SET ${ setString }
-      WHERE id=${ id }
+      UPDATE tour_scores
+      SET "roundOneEnds" = jsonb_set("roundOneEnds", '{end10}', '[10,9,9]'::jsonb, false)
+      WHERE id=$${ id }
       RETURNING *;
-    `, Object.values(fields));
+    `, [id]);
     
     return tourScore;
   } catch (error) {
