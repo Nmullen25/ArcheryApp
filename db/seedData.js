@@ -1,7 +1,7 @@
 const client = require('./client')
 const { createUser } = require("./users");
 const { createTournament } = require("./tournaments");
-const { createTourScore, updateTourScore } = require("./tourScores");
+const { createTourScore, updateTourScore, getTourScoresByUser } = require("./tourScores");
 
 const dropTables = async () => {
     try {
@@ -56,10 +56,10 @@ const createTables = async () => {
           id SERIAL PRIMARY KEY,
           "userId" INTEGER REFERENCES users(id),
           "tournamentId" INTEGER REFERENCES tournaments(id),
-          "roundOneEnds" JSONB,
-          "roundOneScore" INTEGER NOT NULL DEFAULT 0,
-          "roundTwoEnds" JSONB,
-          "roundTwoScore" INTEGER NOT NULL DEFAULT 0,
+          "round1Ends" JSONB,
+          "round1Score" INTEGER NOT NULL DEFAULT 0,
+          "round2Ends" JSONB,
+          "round2Score" INTEGER NOT NULL DEFAULT 0,
           "totalScore" INTEGER NOT NULL DEFAULT 0
         );
   
@@ -70,7 +70,7 @@ const createTables = async () => {
       console.error("Error building tables!");
       throw error;
     }
-  }
+  };
 
   const createInitialUsers = async () => {
     console.log("Starting to create users...");
@@ -121,7 +121,7 @@ const createTables = async () => {
     };
   };
 
-    const createInitialTournaments = async () => {
+  const createInitialTournaments = async () => {
     console.log("Starting to create tournaments...");
     try {
       const tournamentsToCreate = [
@@ -180,9 +180,9 @@ const createTables = async () => {
     try {
       const tourScoresToCreate = [
         {
-          userId: 2, 
+          userId: 1, 
           tournamentId: 2,
-          roundOneEnds: {
+          round1Ends: {
             "end1": [10, 9, 8],
             "end2": [10, 9, 9],
             "end3": [9, 9, 9],
@@ -194,8 +194,8 @@ const createTables = async () => {
             "end9": [10, 9, 7],
             "end10": [10, 10, 9]
           },
-          roundOneScore: 274,
-          roundTwoEnds: {
+          round1Score: 274,
+          round2Ends: {
             "end1": [10, 9, 8],
             "end2": [10, 9, 9],
             "end3": [9, 9, 9],
@@ -207,18 +207,81 @@ const createTables = async () => {
             "end9": [10, 9, 7],
             "end10": [10, 10, 9]
           },
-          roundTwoScore: 274,
+          round2Score: 274,
           totalScore: 568
+        },
+        {
+          userId: 1, 
+          tournamentId: 3,
+          round1Ends: {
+            "end1": [10, 9, 8],
+            "end2": [10, 9, 9],
+            "end3": [9, 9, 9],
+            "end4": [10, 9, 7],
+            "end5": [10, 10, 9],
+            "end6": [10, 9, 8],
+            "end7": [10, 9, 9],
+            "end8": [9, 9, 9],
+            "end9": [10, 9, 7],
+            "end10": [10, 10, 9]
+          },
+          round1Score: 274,
+          round2Ends: {
+            "end1": [10, 9, 8],
+            "end2": [10, 9, 9],
+            "end3": [9, 9, 9],
+            "end4": [10, 9, 7],
+            "end5": [10, 10, 9],
+            "end6": [10, 9, 8],
+            "end7": [10, 9, 9],
+            "end8": [9, 9, 9],
+            "end9": [10, 9, 7],
+            "end10": [10, 10, 9]
+          },
+          round2Score: 270,
+          totalScore: 564
         }
       ];
         const tourScores = await Promise.all(
           tourScoresToCreate.map((tourScore) => createTourScore(tourScore))
         );
         console.log('Tournament Scores Created: ', tourScores);
-        console.log('Finished creating Tournament Scores.');  
-        const update = {id: 1};
-        const updateScores = await updateTourScore((update));
-        console.log('Tournament Scores Updates: ', updateScores);
+        console.log('Finished creating Tournament Scores.'); 
+
+        const scoresToUpdate = [
+          {
+          userId: 1,
+          tournamentId: 3,
+          roundNumber: 1,
+          endNumber: 8,
+          endScore: [10,10,5]
+          },
+          {
+          userId: 1,
+          tournamentId: 2,
+          roundNumber: 2,
+          endNumber: 6,
+          endScore: [8,6,5]
+          }
+        ];
+
+        const updateScores = await Promise.all(
+          scoresToUpdate.map((updateScore) => updateTourScore(updateScore))
+        );
+        console.log('Tournament Scores Updated: ', updateScores);
+
+        const userScores = [
+          {userId: 1}
+        ];
+
+        const getUserScores = await Promise.all(
+          userScores.map((userScore) => getTourScoresByUser
+          (userScore))
+        );
+
+        console.log('User Scores: ', getUserScores);
+        console.log('User Scores: ', getUserScores[0].tourScores[0].totalScore);
+
     } catch(error) {
       throw error;
     };
