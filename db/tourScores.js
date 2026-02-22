@@ -67,51 +67,53 @@ const getTourScoresByUser = async ({userId}) => {
   }
 };
 
-// const getOrderById = async (id) => {
-//   try {
-//     const { rows: [order] } = await client.query(`
-//        SELECT * FROM orders
-//        WHERE id=$1;
-//       `,[id]);
+const getScoresByTour = async (id) => {
+  try {
+    const { rows: [tournament] } = await client.query(`
+       SELECT * FROM tournaments
+       WHERE id=$1;
+      `,[id]);
 
-//     const {rows: products} = await client.query(`
-//       SELECT * FROM products
-//       JOIN order_products ON products.id=order_products."productId"
-//     `);
-//     console.log('order', order);
-//     order.products = products.filter((product) => product.orderId === order.id);
-//     console.log('order', order);
-//     return order;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    const {rows: tourScores} = await client.query(`
+      SELECT * FROM tour_scores
+      JOIN tournaments ON tour_scores."tournamentId"=tournaments.id
+    `);
+    console.log('tournament', tournament);
+    tournament.tourScores = tourScores.filter((score) => score.tournamentId === tournament.id);
+    console.log('tournament w/ scores', tournament);
+    return tournament;
+  } catch (error) {
+    throw error;
+  }
+};
 
-// const getAllOrders = async () => {
-//   try {
-//     const { rows: orders } = await client.query(`
-//       SELECT * FROM orders;
-//       `);
+const getAllScores = async () => {
+  try {
+    const { rows: tournaments } = await client.query(`
+      SELECT * FROM tournaments;
+      `);
       
-//     const {rows: products} = await client.query(`
-//       SELECT * FROM products
-//       JOIN order_products ON products.id=order_products."productId"
-//     `);
+    const {rows: tourScores} = await client.query(`
+      SELECT * FROM tour_scores
+      JOIN tournaments ON tour_scores."tournamentId"=tournaments.id
+    `);
 
-//     orders.forEach((order) => {
-//       order.products = products.filter((product) => product.orderId == order.id);
-//     })
-//     console.log('order', orders);
+    tournaments.forEach((tournament) => {
+      tournament.scores = tourScores.filter((score) => score.tournamentId == tournament.id);
+    })
+    console.log('All Tournaments', tournaments);
     
-//     return orders;
-//   } catch (error) {
-//     throw error;
-//   }
-// };
+    return tournaments;
+  } catch (error) {
+    throw error;
+  }
+};
 
 
 module.exports = {
   createTourScore,
   updateTourScore,
-  getTourScoresByUser
+  getTourScoresByUser,
+  getScoresByTour,
+  getAllScores
 }

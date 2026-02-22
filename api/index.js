@@ -54,8 +54,8 @@ apiRouter.use('/users', usersRouter);
 const tournamentsRouter = require('./tournaments');
 apiRouter.use('/tournaments', tournamentsRouter);
 
-// const ordersRouter = require('./orders');
-// apiRouter.use('/orders', ordersRouter);
+const tourScoresRouter = require('./tourScores');
+apiRouter.use('/orders', tourScoresRouter);
 
 // const orderProductsRouter = require('./orderProducts');
 // apiRouter.use('/orderProducts', orderProductsRouter);
