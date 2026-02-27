@@ -61,12 +61,24 @@ tourScoresRouter.post("/", async (req, res, next) => {
   });
 
 
-tourScoresRouter.get("/:tournamentId", async (req, res, next) => {
+tourScoresRouter.get("/tournament/:tournamentId", async (req, res, next) => {
   const { tournamentId } = req.params;
   try {
     const tournament = await getScoresByTour(tournamentId);
     console.log(tournament, "tournament from tourScoresRouter.get");
     res.send(tournament);
+  } catch (error) {
+    console.log(error);
+  }
+});
+
+
+tourScoresRouter.get("/user/:userId", async (req, res, next) => {
+  const { userId } = req.params;
+  try {
+    const userTourScores = await getTourScoresByUser(userId);
+    console.log(userTourScores, "userTourScores from tourScoresRouter.get");
+    res.send(userTourScores);
   } catch (error) {
     console.log(error);
   }
@@ -88,7 +100,7 @@ tourScoresRouter.delete('/:orderId', async (req, res, next) => {
 tourScoresRouter.patch('/:tournamentId', async (req, res, next) => {
   const { tournamentId, user, roundNumber, endNumber, endScore } = req.params;  
   try {
-    const updatedScore = await updateTourScore({ id: tournamentId, user, roundNumber, endNumber, endScore });
+    const updatedScore = await updateTourScore({ tournamentId, user, roundNumber, endNumber, endScore });
     console.log('updatedOrder', updatedScore);
     res.send({
       updatedScore,

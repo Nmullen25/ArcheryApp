@@ -49,7 +49,8 @@ const createTables = async () => {
           "maxArrowValue" NUMERIC NOT NULL,
           "maxScore" NUMERIC NOT NULL,
           date VARCHAR(255) NOT NULL,
-          location VARCHAR(255) NOT NULL
+          location VARCHAR(255) NOT NULL,
+          level VARCHAR(255) NOT NULL
         );
 
         CREATE TABLE tour_scores  (
@@ -105,7 +106,7 @@ const createTables = async () => {
           password: '123456', 
           email: 'Aaron@gmail.com', 
           isAdmin: true,
-          division: 'Bareboe Recurve',
+          division: 'Barebow Recurve',
           ageClass: 'Adult',
           gender: 'Male' 
         }
@@ -136,11 +137,12 @@ const createTables = async () => {
           maxArrowValue: 10,
           maxScore: 300,
           date: 'March 14-15 2026',
-          location: 'Archery School of The Rockies'
+          location: 'Archery School of The Rockies',
+          level: 'Local'
         },
         { 
           name: 'CSAA Vegas 900', 
-          description: 'State Championship, Round 1 of 2',
+          description: 'State Championship',
           organizer: 'Colorado State Archery Association',
           association: 'NFAA',
           roundType: 'Vegas 450',
@@ -149,11 +151,12 @@ const createTables = async () => {
           maxArrowValue: 10,
           maxScore: 450,
           date: 'March 21-22 2026',
-          location: 'Empty Quiver Archery & Red Rock Archery'
+          location: 'Empty Quiver Archery & Red Rock Archery',
+          level: 'State'
         },
         { 
           name: 'CSAA 5 Spot 600', 
-          description: 'State Championship, Round 1 of 2',
+          description: 'State Championship',
           organizer: 'Colorado State Archery Association',
           association: 'NFAA',
           roundType: '5 Spot 300',
@@ -162,9 +165,11 @@ const createTables = async () => {
           maxArrowValue: 5,
           maxScore: 300,
           date: 'January 31st - February 1st 2026',
-          location: 'Archery School of The Rockies & Red Rock Archery' 
+          location: 'Archery School of The Rockies & Red Rock Archery',
+          level: 'State'
         }
       ];
+
       const tournaments = await Promise.all(tournamentsToCreate.map(createTournament));
       console.log("Tournaments created:");
       console.log(tournaments);
@@ -180,39 +185,43 @@ const createTables = async () => {
     try {
       const tourScoresToCreate = [
         {
-          userId: 1, 
-          tournamentId: 2,
+          userId: 2, 
+          tournamentId: 3,
           round1Ends: {
-            "end1": [10, 9, 8],
-            "end2": [10, 9, 9],
-            "end3": [9, 9, 9],
-            "end4": [10, 9, 7],
-            "end5": [10, 10, 9],
-            "end6": [10, 9, 8],
-            "end7": [10, 9, 9],
-            "end8": [9, 9, 9],
-            "end9": [10, 9, 7],
-            "end10": [10, 10, 9]
+            "end1": ['x',5,4,4,3],
+            "end2": [5,5,4,4,4],
+            "end3": ['x','x',5,5,4],
+            "end4": ['x',5,4,4,3],
+            "end5": ['x',5,4,4,4],
+            "end6": [5,5,5,5,5],
+            "end7": [4,4,4,4,3],
+            "end8": [5,5,4,4,3],
+            "end9": ['x',5,5,4,4],
+            "end10": [5,5,5,4,4],
+            "end11": [5,4,4,4,3],
+            "end12": [5,5,4,4,4]
           },
-          round1Score: 274,
+          round1Score: 263,
           round2Ends: {
-            "end1": [10, 9, 8],
-            "end2": [10, 9, 9],
-            "end3": [9, 9, 9],
-            "end4": [10, 9, 7],
-            "end5": [10, 10, 9],
-            "end6": [10, 9, 8],
-            "end7": [10, 9, 9],
-            "end8": [9, 9, 9],
-            "end9": [10, 9, 7],
-            "end10": [10, 10, 9]
+            "end1": ['x','x',5,4,4],
+            "end2": ['x',5,5,5,4],
+            "end3": ['x',5,5,5,4],
+            "end4": [5,5,4,4,4],
+            "end5": ['x',5,5,4,4],
+            "end6": ['x','x','x','x',5],
+            "end7": ['x',5,5,4,4],
+            "end8": [5,5,5,4,4],
+            "end9": ['x',5,5,5,4],
+            "end10": [5,5,5,4,4],
+            "end11": ['x',5,4,4,4],
+            "end12": [5,5,5,5,4]
           },
-          round2Score: 274,
-          totalScore: 568
+          round2Score: 280,
+          totalScore: 543
         },
         {
           userId: 1, 
-          tournamentId: 3,
+          tournamentId: 2,
           round1Ends: {
             "end1": [10, 9, 8],
             "end2": [10, 9, 9],
@@ -239,7 +248,38 @@ const createTables = async () => {
             "end10": [10, 10, 9]
           },
           round2Score: 270,
-          totalScore: 564
+          totalScore: 544
+        },
+        {
+          userId: 3, 
+          tournamentId: 1,
+          round1Ends: {
+            "end1": [10, 9, 8],
+            "end2": [10, 9, 9],
+            "end3": [9, 9, 9],
+            "end4": [10, 9, 7],
+            "end5": [10, 10, 9],
+            "end6": [10, 9, 8],
+            "end7": [10, 9, 9],
+            "end8": [9, 9, 9],
+            "end9": [10, 9, 7],
+            "end10": [10, 10, 9]
+          },
+          round1Score: 274,
+          round2Ends: {
+            "end1": [10, 9, 8],
+            "end2": [10, 9, 9],
+            "end3": [9, 9, 9],
+            "end4": [10, 9, 7],
+            "end5": [10, 10, 9],
+            "end6": [10, 9, 8],
+            "end7": [10, 9, 9],
+            "end8": [9, 9, 9],
+            "end9": [10, 9, 7],
+            "end10": [10, 10, 9]
+          },
+          round2Score: 270,
+          totalScore: 544
         }
       ];
         const tourScores = await Promise.all(
@@ -249,13 +289,6 @@ const createTables = async () => {
         console.log('Finished creating Tournament Scores.'); 
 
         const scoresToUpdate = [
-          {
-          userId: 1,
-          tournamentId: 3,
-          roundNumber: 1,
-          endNumber: 8,
-          endScore: [10,10,5]
-          },
           {
           userId: 1,
           tournamentId: 2,
@@ -280,7 +313,6 @@ const createTables = async () => {
         );
 
         console.log('User Scores: ', getUserScores);
-        console.log('User Scores: ', getUserScores[0].tourScores[0].totalScore);
 
     } catch(error) {
       throw error;
@@ -294,6 +326,15 @@ const createTables = async () => {
       await createTables();
       await createInitialUsers();
       await createInitialTournaments();
+    } catch (error) {
+      console.log("Error during rebuildDB");
+      throw error;
+    }
+  };
+
+  async function addDB() {
+    try {
+      client.connect();
       await createInitialTourScores();
     } catch (error) {
       console.log("Error during rebuildDB");
@@ -303,4 +344,5 @@ const createTables = async () => {
   
   module.exports = {
     rebuildDB,
+    addDB
   };

@@ -35,10 +35,12 @@ const updateTourScore = async ({user, tournamentId, roundNumber, endNumber, endS
 
 const getTourScoresByUser = async ({userId}) => {
   try {
-    const {rows: tourScores } = await client.query(`
+    const {rows: tournaments } = await client.query(`
       SELECT *
       FROM tour_scores
-      WHERE "userId"=$1;
+      JOIN tournaments ON tournaments.id=tour_scores."tournamentId"
+      WHERE "userId"=$1
+      ;
     `, [userId]);
 
     const {rows: [user] } = await client.query(`
@@ -47,19 +49,16 @@ const getTourScoresByUser = async ({userId}) => {
       WHERE id=$1;
     `, [userId]);
 
-    const {rows: tournaments } = await client.query(`
-      SELECT *
-      FROM tournaments
-      JOIN tour_scores ON tour_scores."tournamentId"=tournaments.id
-    ;`);
-
-    console.log('users50', tourScores);
+    console.log('user', user);
     console.log('tournaments51', tournaments);
 
-    tourScores.forEach((tourScore) => {
-      user.tournament = tournaments.filter(tournament => tournament.id === tourScore.tournamentId && user.id === tourScore.userId)
-      user.tourScores = tourScores.filter(tourScore => tourScore.userId === user.id);
-    });
+    const userTournaments = tournaments.filter(tournament => tournament.userId === user.id);
+
+    user.tournaments = userTournaments;
+
+    console.log('user82', user)
+    console.log('userT99', user.tournaments)
+
     
     return user;
   } catch (error) {

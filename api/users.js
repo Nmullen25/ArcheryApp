@@ -13,17 +13,17 @@ const {
   destroyUser
 } = require("../db/users");
 
+const { getTourScoresByUser } = require("../db/tourScores")
+
 const jwt = require("jsonwebtoken");
 const { requireUser, checkAdmin } = require("./utils");
-const { getOrdersByUser } = require("../db/orders");
 
-usersRouter.get('/', requireUser, async (req, res, next) => {
+
+usersRouter.get('/', async (req, res, next) => {
   try {
-    if (checkAdmin) {
       const allUsers = await getAllUsers();
       console.log('allUsers', allUsers);
       res.send(allUsers);
-    }
   } catch (error) {
     throw error;
   }
@@ -174,22 +174,13 @@ usersRouter.patch('/:userId', requireUser, async (req, res, next) => {
     }
 });
 
-usersRouter.get('/:userId/orders', requireUser, async (req, res, next) => {
+usersRouter.get('/:userId/scores', async (req, res, next) => {
   const { userId } = req.params;
-  const _user = req.user
+  console.log('userId', userId);
   try {
-    const user = await getUserById(userId);
-    console.log('_user', _user);
-    if ((_user.isAdmin === true) || (_user.id === user.id)) {
-      const orders = await getOrdersByUser(user.id);
-      console.log('orders172', orders);
-      res.send(orders);
-    } else {
-      res.send({
-        error: "AdminError",
-        message: "You must be an Admin to access that"
-      })
-    }
+      const scores = await getTourScoresByUser({userId});
+      console.log('scores183', scores);
+      res.send(scores);
     
   } catch (error) {
     console.log(error);
@@ -197,7 +188,7 @@ usersRouter.get('/:userId/orders', requireUser, async (req, res, next) => {
   }
 });
 
-usersRouter.delete('/:userId', async (req, res, next) => {
+usersRouter.delete('/:userId', requireUser, async (req, res, next) => {
   const { userId } = req.params;
   try {
     const userToDelete = await destroyUser(userId);

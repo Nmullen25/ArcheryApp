@@ -7,7 +7,7 @@ const {
   getTournamentById,
   updateTournament, 
   destroyTournament
-} = require("../db");
+} = require("../db/tournaments");
 
 const { requireUser, checkAdmin } = require("./utils");
 
@@ -23,10 +23,10 @@ tournamentsRouter.get("/", async (req, res, next) => {
 
 /*POST Create a new product*/
 tournamentsRouter.post("/", requireUser, async (req, res, next) => {
-  const { name, description, organizer, association, roundType, endCount, arrowsPerEnd, maxArrowValue, maxScore, date, location } = req.body;
+  const { name, description, organizer, association, roundType, endCount, arrowsPerEnd, maxArrowValue, maxScore, date, location, level } = req.body;
   try {
     if (checkAdmin) {
-    const tournament = await createTournament({ name, description, organizer, association, roundType, endCount, arrowsPerEnd, maxArrowValue, maxScore, date, location });
+    const tournament = await createTournament({ name, description, organizer, association, roundType, endCount, arrowsPerEnd, maxArrowValue, maxScore, date, location, level });
 
     res.send({
       id: tournament.id,
@@ -40,7 +40,8 @@ tournamentsRouter.post("/", requireUser, async (req, res, next) => {
       maxArrowValue, 
       maxScore, 
       date, 
-      location
+      location,
+      level
     });
   } else {
     res.send({
@@ -104,6 +105,9 @@ tournamentsRouter.patch("/:tournamentId", requireUser, async (req, res, next) =>
     }
     if(location) {
         updateFields.location = location;
+    }
+    if(level) {
+        updateFields.level = level;
     }
 
   try {
