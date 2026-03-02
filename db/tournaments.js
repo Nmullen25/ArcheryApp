@@ -23,15 +23,15 @@ const getAllTournaments = async () => {
   }
 }
 
-const createTournament = async ({ name, description, organizer, association, roundType, endCount, arrowsPerEnd, maxArrowValue, maxScore, date, location, level }) => {
+const createTournament = async ({ name, description, organizer, association, roundType, endCount, arrowsPerEnd, maxArrowValue, maxScore, date, location, level, status }) => {
   try {
     const {
       rows: [tournament] } = await client.query(
       `
-       INSERT INTO tournaments(name, description, organizer, association, "roundType", "endCount", "arrowsPerEnd", "maxArrowValue", "maxScore", date, location, level)
-       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12)
+       INSERT INTO tournaments(name, description, organizer, association, "roundType", "endCount", "arrowsPerEnd", "maxArrowValue", "maxScore", date, location, level, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
        RETURNING *;     
-     `, [name, description, organizer, association, roundType, endCount, arrowsPerEnd, maxArrowValue, maxScore, date, location, level] );
+     `, [name, description, organizer, association, roundType, endCount, arrowsPerEnd, maxArrowValue, maxScore, date, location, level, status] );
 
     return tournament;
   } catch (error) {

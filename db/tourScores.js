@@ -86,7 +86,7 @@ const getScoresByTour = async (id) => {
   }
 };
 
-const getAllScores = async () => {
+const getAllTourScores = async () => {
   try {
     const { rows: tournaments } = await client.query(`
       SELECT * FROM tournaments;
@@ -114,5 +114,5 @@ module.exports = {
   updateTourScore,
   getTourScoresByUser,
   getScoresByTour,
-  getAllScores
+  getAllTourScores
 }

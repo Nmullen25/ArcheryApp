@@ -4,8 +4,8 @@ import { callApi } from '../axios-services'
 // import "../style/Products.css";
 // import "../style/Home.css";
 
-const Home = ({ products, setProducts }) => {
-  const history = useHistory();
+const Home = () => {
+  // const history = useHistory();
   
   
   // const goToProduct = (event, productId) => {

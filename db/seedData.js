@@ -7,6 +7,7 @@ const dropTables = async () => {
     try {
       console.log("Dropping All Tables...");
       await client.query(`
+      DROP TABLE IF EXISTS prac_scores;
       DROP TABLE IF EXISTS tour_scores;
       DROP TABLE IF EXISTS tournaments;
       DROP TABLE IF EXISTS users;
@@ -50,7 +51,8 @@ const createTables = async () => {
           "maxScore" NUMERIC NOT NULL,
           date VARCHAR(255) NOT NULL,
           location VARCHAR(255) NOT NULL,
-          level VARCHAR(255) NOT NULL
+          level VARCHAR(255) NOT NULL,
+          status VARCHAR(255) NOT NULL
         );
 
         CREATE TABLE tour_scores  (
@@ -62,6 +64,14 @@ const createTables = async () => {
           "round2Ends" JSONB,
           "round2Score" INTEGER NOT NULL DEFAULT 0,
           "totalScore" INTEGER NOT NULL DEFAULT 0
+        );
+
+        CREATE TABLE prac_scores  (
+          id SERIAL PRIMARY KEY,
+          "userId" INTEGER REFERENCES users(id),
+          "roundEnds" JSONB,
+          "roundScore" INTEGER NOT NULL DEFAULT 0,
+          "roundType" VARCHAR(255) NOT NULL
         );
   
       `);
@@ -138,7 +148,8 @@ const createTables = async () => {
           maxScore: 300,
           date: 'March 14-15 2026',
           location: 'Archery School of The Rockies',
-          level: 'Local'
+          level: 'Local',
+          status: 'Upcoming'
         },
         { 
           name: 'CSAA Vegas 900', 
@@ -152,7 +163,8 @@ const createTables = async () => {
           maxScore: 450,
           date: 'March 21-22 2026',
           location: 'Empty Quiver Archery & Red Rock Archery',
-          level: 'State'
+          level: 'State',
+          status: 'In Progress'
         },
         { 
           name: 'CSAA 5 Spot 600', 
@@ -166,7 +178,8 @@ const createTables = async () => {
           maxScore: 300,
           date: 'January 31st - February 1st 2026',
           location: 'Archery School of The Rockies & Red Rock Archery',
-          level: 'State'
+          level: 'State',
+          status: 'Completed'
         }
       ];
 
@@ -185,7 +198,7 @@ const createTables = async () => {
     try {
       const tourScoresToCreate = [
         {
-          userId: 2, 
+          userId: 1, 
           tournamentId: 3,
           round1Ends: {
             "end1": ['x',5,4,4,3],
@@ -220,7 +233,7 @@ const createTables = async () => {
           totalScore: 543
         },
         {
-          userId: 1, 
+          userId: 2, 
           tournamentId: 2,
           round1Ends: {
             "end1": [10, 9, 8],

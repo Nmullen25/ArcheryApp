@@ -1,14 +1,14 @@
 const express = require("express");
 const tourScoresRouter = express.Router();
 
-const { createTourScore, updateTourScore, getTourScoresByUser, getAllScores, getScoresByTour  } = require("../db/tourScores");
+const { createTourScore, updateTourScore, getTourScoresByUser, getAllTourScores, getScoresByTour  } = require("../db/tourScores");
 const { requireUser, checkAdmin } = require("./utils");
 
 /*GET return a list of orders in the database, need admin, how about requireAdmin function?*/
 tourScoresRouter.get("/", requireUser, async (req, res, next) => {
     try {
       if (checkAdmin) {
-        const tournaments = await getAllScores();
+        const tournaments = await getAllTourScores();
         res.send(tournaments);
       } else {
         res.send({
