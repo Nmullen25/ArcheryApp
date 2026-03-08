@@ -1,45 +1,44 @@
 const client = require('./client');
 
-const createPracScore = async ({ userId, pracScoreId, roundEnds, roundScore, pracType }) => {
+const createPracRound = async ({ userId, roundEnds, arrowsPerEnd, maxArrowValue, roundScore, roundType, maxScore }) => {
   try {
-    const { rows: [tourScore] } = await client.query(`
-      INSERT INTO tour_scores ("userId", "pracScoreId", "roundEnds", "roundScore", "pracType")
+    const { rows: [prac_score] } = await client.query(`
+      INSERT INTO prac_scores ("userId", "roundEnds", "arrowsPerEnd", "maxArrowValue", "roundScore", "roundType", "maxScore")
       VALUES ($1, $2, $3, $4, $5, $6, $7)
       RETURNING *;
-    `, [userId, pracScoreId, roundEnds, roundScore, pracType]);
-    return tourScore;
+    `, [userId, roundEnds, arrowsPerEnd, maxArrowValue, roundScore, roundType, maxScore]);
+    return prac_score;
   } catch (error) {
     throw error
   };
 };
 
-const updatePracScore = async ({user, pracScoreId, roundNumber, endNumber, endScore}) => {
+const updatePracScore = async ({user, pracScoreId, endNumber, endScore}) => {
 
-  const updateString = `"round${ roundNumber }Ends" = jsonb_set("round${ roundNumber }Ends", '{end${ endNumber }}', '[${ endScore }]'::jsonb, false)`
+  const updateString = `"roundEnds" = jsonb_set("roundEnds", '{end${ endNumber }}', '[${ endScore }]'::jsonb, false)`
 
 // "roundOneEnds" = jsonb_set("roundOneEnds", '{end10}', '[10,9,9]'::jsonb, false)
 
   try {
-    const { rows: [tourScore] } = await client.query(`
+    const { rows: [prac_score] } = await client.query(`
       UPDATE prac_scores
       SET ${ updateString }
-      WHERE "userId"=$1 AND "pracScoreId"=$2
+      WHERE "userId"=$1 AND prac_score.id=$2
       RETURNING *;
     `, [user, pracScoreId]);
     
-    return tourScore;
+    return prac_score;
   } catch (error) {
     console.error ("Problem updating score info", error);
   }
 };
 
-const getPracScoresByUser = async ({userId}) => {
+const getPracScoresByUser = async (userId) => {
   try {
     const {rows: prac_scores } = await client.query(`
       SELECT *
       FROM prac_scores
-      WHERE "userId"=$1
-      ;
+      WHERE "userId"=$1;
     `, [userId]);
 
     const {rows: [user] } = await client.query(`
@@ -49,14 +48,14 @@ const getPracScoresByUser = async ({userId}) => {
     `, [userId]);
 
     console.log('user', user);
-    console.log('tournaments51', prac_scores);
+    console.log('Practice Scores', prac_scores);
 
-    const userPracScores = prac_scores.filter(prac_score => prac_score.userId === user.id);
+    // const userPracScores = prac_scores.filter(prac_score => prac_score.userId === user.id);
 
-    user.prac_scores = userPracScores;
+    user.pracScores = prac_scores;
 
     console.log('user82', user)
-    console.log('userT99', user.prac_scores)
+    console.log('userT99', user.pracScores)
 
     
     return user;
@@ -109,7 +108,7 @@ const getPracScoresByUser = async ({userId}) => {
 
 
 module.exports = {
-  createPracScore,
+  createPracRound,
   updatePracScore,
   getPracScoresByUser,
   // getScoresByPrac,

@@ -55,10 +55,10 @@ const tournamentsRouter = require('./tournaments');
 apiRouter.use('/tournaments', tournamentsRouter);
 
 const tourScoresRouter = require('./tourScores');
-apiRouter.use('/orders', tourScoresRouter);
+apiRouter.use('/tourscores', tourScoresRouter);
 
-// const orderProductsRouter = require('./orderProducts');
-// apiRouter.use('/orderProducts', orderProductsRouter);
+const pracScoresRouter = require('./pracScores');
+apiRouter.use('/pracscores', pracScoresRouter);
 
 // const reviewsRouter = require('./reviews');
 // apiRouter.use('/reviews', reviewsRouter);

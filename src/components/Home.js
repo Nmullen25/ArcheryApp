@@ -15,6 +15,11 @@ const Home = () => {
 
   return <div >
     <h1><u>Home</u></h1>
+    <div id='home-buttons'>
+      <button className='score-button' id='score-button'>Scores</button>
+      <button className='tour-button' id='tour-button'>Tournaments</button>
+      <button className='calendar-button' id='calendar-button'>Calendar</button>
+    </div>
   </div>
 
 };

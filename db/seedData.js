@@ -70,8 +70,12 @@ const createTables = async () => {
           id SERIAL PRIMARY KEY,
           "userId" INTEGER REFERENCES users(id),
           "roundEnds" JSONB,
+          "arrowsPerEnd" NUMERIC NOT NULL,
+          "maxArrowValue" NUMERIC NOT NULL,
           "roundScore" INTEGER NOT NULL DEFAULT 0,
-          "roundType" VARCHAR(255) NOT NULL
+          "roundType" VARCHAR(255) NOT NULL,
+          "maxScore" NUMERIC NOT NULL,
+          date DATE DEFAULT CURRENT_DATE
         );
   
       `);

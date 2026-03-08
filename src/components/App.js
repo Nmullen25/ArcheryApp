@@ -5,17 +5,21 @@ import {
   Home,
   Title,
   Login,
-  Register
+  Register,
+  UserAccount,
+  PracScores,
+  CreatePractice
 } from "./";
 
 const App = () => {
-  const [APIHealth, setAPIHealth] = useState("");
+  // const [APIHealth, setAPIHealth] = useState("");
   const userAuth = JSON.parse(localStorage.getItem("user"));
   const userToken = JSON.parse(localStorage.getItem("token"));
   const [token, setToken] = useState(userToken);
   const [loggedIn, setLoggedIn] = useState(userAuth);
   const [message, setMessage] = useState(null);
-  // const [products, setProducts] = useState([]);
+  const [myTourScores, setMyTourScores] = useState([]);
+  const [myPracScores, setMyPracScores] = useState([]);
   // const [orders, setOrders] = useState();
   // const [myCart, setMyCart] = useState();
   // const [users, setUsers] = useState();
@@ -43,7 +47,9 @@ const App = () => {
           setToken={setToken}
         />
         <Route exact path="/">
-          <Home />
+          <Home 
+            
+          />
         </Route>
 
         <Route exact path="/login">
@@ -58,6 +64,26 @@ const App = () => {
           <Register 
             setToken={setToken} 
             setMessage={setMessage}  
+          />
+        </Route>
+
+        <Route exact path="/account">
+          <UserAccount 
+            token={token} 
+            loggedIn={loggedIn}
+            myTourScores={myTourScores}
+            setMyTourScores={setMyTourScores}
+          />
+        </Route>
+
+        <Route exact path="/pracscores">
+          <PracScores
+            CreatePractice={<CreatePractice />}
+            token={token} 
+            loggedIn={loggedIn}
+            myPracScores={myPracScores}
+            setMyPracScores={setMyPracScores}
+            setMessage={setMessage}
           />
         </Route>
       </div>
