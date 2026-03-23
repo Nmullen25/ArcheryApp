@@ -16,8 +16,8 @@ pracScoresRouter.post("/", async (req, res, next) => {
 
     if (roundType === 'Vegas 300') {
         roundEnds = {
-          "end1": [], "end2": [], "end3": [], "end4": [], "end5": [],
-          "end6": [], "end7": [], "end8": [], "end9": [], "end10": []
+          1: [], 2: [], 3: [], 4: [], 5: [],
+          6: [], 7: [], 8: [], 9: [], 10: []
         };
         arrowsPerEnd = 3;
         maxArrowValue = 10;
@@ -57,7 +57,8 @@ pracScoresRouter.post("/", async (req, res, next) => {
         console.log('Created Practice,', pracRound);
         res.send({
           userId,
-          message: 'Practice Created'
+          message: 'Practice Created',
+          id: pracRound.id
         });
       } else {
           res.send({

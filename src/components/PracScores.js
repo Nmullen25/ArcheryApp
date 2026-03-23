@@ -27,11 +27,16 @@ const PracScores = ({ token, loggedIn, myPracScores, setMyPracScores, setMessage
 
   }, [token, loggedIn.id]);
 
+  const goToPracScore = (event, pracScoreId) => {
+    event.preventDefault();
+    history.push(`/pracscores/${pracScoreId}`)
+  }
+
   return (
     <div id='user-prac-scores'>
       {loggedIn ? (
         <>
-          <CreatePractice token={token} loggedIn={loggedIn} setMessage={setMessage}/>
+          <CreatePractice token={token} loggedIn={loggedIn} setMessage={setMessage} setMyPracScores={setMyPracScores} myPracScores={myPracScores} />
           <div id='prac-scores'>
             {myPracScores.length? myPracScores && myPracScores.map((pracScore) => {
               return (
@@ -41,6 +46,8 @@ const PracScores = ({ token, loggedIn, myPracScores, setMyPracScores, setMessage
                     <h3>{pracScore.date}</h3>
                     <h3>Round Score: {pracScore.roundScore}</h3>
                   </div>
+                  <button className='product-button' type='submit' 
+                    onClick={(e) => goToPracScore(e, pracScore.id)}>View Practice Round</button>
                 </div>
               );
             }) : null }

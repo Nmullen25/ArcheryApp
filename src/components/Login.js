@@ -31,7 +31,7 @@ const Login = ({setToken, setLoggedIn, setMessage}) => {
         setLoggedIn(result.data.user);
         setMessage("Welcome Back, "+ result.data.user.firstName);
         Snackbar();
-        history.push('/');
+        history.push('/account');
       } else {
         setMessage(result.data.message)
         Snackbar();

@@ -5,4 +5,6 @@ export { default as Register } from './Register';
 export { default as Title } from './Title';
 export { default as UserAccount } from './UserAccount';
 export { default as PracScores } from './PracScores';
+export { default as ViewPractice } from './ViewPractice';
+export { default as ViewScore } from './ViewScore';
 export { default as CreatePractice } from './CreatePractice';

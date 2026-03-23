@@ -8,7 +8,9 @@ import {
   Register,
   UserAccount,
   PracScores,
-  CreatePractice
+  CreatePractice,
+  ViewPractice,
+  ViewScore
 } from "./";
 
 const App = () => {
@@ -84,6 +86,20 @@ const App = () => {
             myPracScores={myPracScores}
             setMyPracScores={setMyPracScores}
             setMessage={setMessage}
+          />
+        </Route>
+
+        <Route exact path="/pracscores/:pracScoreId">
+          <ViewPractice 
+            loggedIn={loggedIn}
+            myPracScores={myPracScores}
+          />
+        </Route>
+
+        <Route exact path="/tourscores/:tourScoreId">
+          <ViewScore 
+            loggedIn={loggedIn}
+            myTourScores={myTourScores}
           />
         </Route>
       </div>

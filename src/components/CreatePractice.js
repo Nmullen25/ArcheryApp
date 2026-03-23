@@ -1,10 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { callApi } from "../axios-services";
+import { Snackbar } from "./Snackbar";
+import { useHistory } from 'react-router-dom';
 
-const CreatePractice = ({ token, loggedIn, setMessage }) => {
+const CreatePractice = ({ token, loggedIn, setMessage, setMyPracScores }) => {
   const [roundType, setRoundType] = useState('');
+  const [pracScoreId, setPracScoreId] = useState('');
+  const history  = useHistory();
 
-  const handleSubmit = async (event) => {
+  const handleSubmit = async (event, pracScoreId) => {
       event.preventDefault();
 
       if (roundType !== '') {
@@ -20,15 +24,37 @@ const CreatePractice = ({ token, loggedIn, setMessage }) => {
               }
           });
           console.log('newPractice, ', newPractice);
-          return newPractice;
+
+          const getData = async () => {
+            const getPracScores = await callApi({
+              url: `api/pracscores/user/${loggedIn.id}`,
+              method: "GET",
+              headers: {
+                "Content-Type": "application/json",
+                },
+              token
+              });
+              console.log("user", loggedIn)
+            console.log(getPracScores);
+            setMyPracScores(getPracScores.data.pracScores);
+
+          };
+          getData();
+          setPracScoreId(newPractice.data.id)
+          console.log("pracscoreid", pracScoreId)
+          history.push(`/pracscores/${pracScoreId}`)
 
         } catch (error) {
           throw error
         }
       } else {
-        setMessage("Please Select A Round Type")
+        setMessage("Please Select A Round Type");
+        Snackbar();
     }
-  }
+
+
+    
+  };
 
   return (
 
